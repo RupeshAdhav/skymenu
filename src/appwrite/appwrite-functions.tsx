@@ -9,7 +9,7 @@ export const getUser = () => {
 
 // send verification email
 export const sendVerificationEmail = () => {
-    return account.createVerification("https://skymenu.vercel.app/email-verification");
+    return account.createVerification("http://localhost:3000/email-verification");
 }
 
 // confirm verification email
@@ -34,7 +34,7 @@ export const deleteAccount = (userId: string) => {
 
 // send password reset link
 export const sendForgotPasswordLink = (email: string) => {
-    return account.createRecovery(email, "https://skymenu.vercel.app/forgot-password-recovery");
+    return account.createRecovery(email, "http://localhost:3000/forgot-password-recovery/"+email+"/");
 }
 
 // update password by reset link

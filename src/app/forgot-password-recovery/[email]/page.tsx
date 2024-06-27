@@ -1,23 +1,21 @@
 'use client';
 
 import { useSearchParams, useRouter } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { Suspense, useEffect, useState } from 'react';
 import Link from "next/link";
 import { updateForgotPassword } from '@/appwrite/appwrite-functions';
 import Spinner from '@/components/spinner';
 import PageHeader from '@/components/page-header';
 import { toast } from 'react-hot-toast';
-import { Suspense } from 'react'
 
 
-export default function ForgotPasswordConfirmation() {
+export default function ForgotPasswordConfirmation({params} : {params:any}) {
 
     const [dataLoaded, setDataLoaded] = useState(true);
     const [isNewPasswordSet, setNewPassword] = useState(false);
     const [disabledButton, setDisabledButton] = useState(false);
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
-    const [email, setEmail] = useState('');
 
     const router = useRouter();
     const searchParams = useSearchParams();
@@ -59,18 +57,15 @@ export default function ForgotPasswordConfirmation() {
         if(searchParams.has('userId') || searchParams.has('secret')){
             setDataLoaded(true);
         }else{
-            toast.error('User id not found');
+            //toast.error('User id not found');
             router.push('/not-found');
         }
      // eslint-disable-next-line react-hooks/exhaustive-deps
      }, []);
 
     return (
-        <Suspense>
+        <Suspense fallback={<Spinner />}>
 
-            { !dataLoaded ? 
-                    <Spinner/>
-                :
                     <div className="flex min-h-full flex-1 flex-col justify-center px-6 py-16 lg:px-8">
                         <PageHeader header={ isNewPasswordSet ?  'Password updated successfully!' : 'Password recovery' }/>
 
@@ -92,7 +87,7 @@ export default function ForgotPasswordConfirmation() {
                                             </label>
                                             <div className="mt-2">
                                                 <input
-                                                value={email}
+                                                value={decodeURIComponent(params.email)}
                                                 id="email"
                                                 name="email"
                                                 type="email"
@@ -146,7 +141,7 @@ export default function ForgotPasswordConfirmation() {
                             }
                         </div>
                     </div>
-            }
+            
         </Suspense>
     )
 }

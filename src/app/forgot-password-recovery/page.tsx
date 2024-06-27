@@ -17,10 +17,10 @@ export default function ForgotPasswordConfirmation() {
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
 
-    const router = useRouter();
-    const searchParams = useSearchParams();
-    const userId = String(searchParams.get('userId'));
-    const secret = String(searchParams.get('secret'));
+    // const router = useRouter();
+    // const searchParams = useSearchParams();
+    // const userId = String(searchParams.get('userId'));
+    // const secret = String(searchParams.get('secret'));
 
     const handleSubmit = async (event: any) => {
         event.preventDefault();
@@ -31,15 +31,15 @@ export default function ForgotPasswordConfirmation() {
 
                     setDisabledButton(true);
 
-                    updateForgotPassword(userId, secret, password, confirmPassword)
-                    .then(() => {
-                        setNewPassword(true);
-                        setDisabledButton(false);
-                    })
-                    .catch((err: any) => {
-                        toast.error(err.message); 
-                        setDisabledButton(false);
-                    });
+                    // updateForgotPassword(userId, secret, password, confirmPassword)
+                    // .then(() => {
+                    //     setNewPassword(true);
+                    //     setDisabledButton(false);
+                    // })
+                    // .catch((err: any) => {
+                    //     toast.error(err.message); 
+                    //     setDisabledButton(false);
+                    // });
 
                 } catch (err: any) {
                     toast.error(JSON.stringify(err)); 
@@ -54,12 +54,12 @@ export default function ForgotPasswordConfirmation() {
     }
 
     useEffect(() => {
-        if(searchParams.has('userId') || searchParams.has('secret')){
-            setDataLoaded(true);
-        }else{
-            toast.error('User id not found');
-            router.push('/not-found');
-        }
+        // if(searchParams.has('userId') || searchParams.has('secret')){
+        //     setDataLoaded(true);
+        // }else{
+        //     toast.error('User id not found');
+        //     router.push('/not-found');
+        // }
      // eslint-disable-next-line react-hooks/exhaustive-deps
      }, []);
 

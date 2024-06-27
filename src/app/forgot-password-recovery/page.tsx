@@ -7,6 +7,7 @@ import { updateForgotPassword } from '@/appwrite/appwrite-functions';
 import Spinner from '@/components/spinner';
 import PageHeader from '@/components/page-header';
 import { toast } from 'react-hot-toast';
+import { Suspense } from 'react'
 
 
 export default function ForgotPasswordConfirmation() {
@@ -64,7 +65,7 @@ export default function ForgotPasswordConfirmation() {
      }, []);
 
     return (
-        <>
+        <Suspense>
 
             { !dataLoaded ? 
                     <Spinner/>
@@ -145,6 +146,6 @@ export default function ForgotPasswordConfirmation() {
                         </div>
                     </div>
             }
-        </>
+       </Suspense>
     )
 }

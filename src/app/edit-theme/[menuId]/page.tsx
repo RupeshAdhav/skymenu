@@ -314,8 +314,8 @@ export default function EditTheme({params} : {params:any}) {
                                                                 }
                                                                 
                                                                 <div className='absolute bottom-4 right-4'>
-                                                                    <button onClick={handleDrawer} type='button' className={`btn btn-circle btn-sm ${theme.drawer_bg_color} border-none`}>
-                                                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className={`w-5 h-5 ${theme.category_txt_color} `}>
+                                                                    <button onClick={handleDrawer} type='button' className={`btn btn-circle btn-md ${theme.drawer_bg_color} border-none`}>
+                                                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className={`w-6 h-6 ${theme.category_txt_color} `}>
                                                                             <path fillRule="evenodd" d="M2 4.75A.75.75 0 0 1 2.75 4h14.5a.75.75 0 0 1 0 1.5H2.75A.75.75 0 0 1 2 4.75ZM2 10a.75.75 0 0 1 .75-.75h14.5a.75.75 0 0 1 0 1.5H2.75A.75.75 0 0 1 2 10Zm0 5.25a.75.75 0 0 1 .75-.75h14.5a.75.75 0 0 1 0 1.5H2.75a.75.75 0 0 1-.75-.75Z" clipRule="evenodd" />
                                                                         </svg>
                                                                     </button>

@@ -40,7 +40,7 @@ export default function DeleteMenu(props :any) {
             <dialog id="delete-menu-modal" className={`modal ${props.modal ? "modal-open" : "modal-close"}`}>
                 <div className="modal-box rounded p-0">
                     <div className="border-b py-4">
-                        <h1 className="text-xl text-gray-900 text-center">Delete Menu &ldquo;{props.menu.menu_name}&rdquo;</h1>
+                        <h1 className="text-xl text-gray-900 text-center">Delete &ldquo;{props.menu.menu_name}&rdquo; Menu</h1>
                     </div>
                     <div className="modal-action px-6">
                         <div className="w-full pb-6">

@@ -5,20 +5,15 @@ import { useEffect, useState } from 'react';
 
 import '@/style/scrollbar.css';
 import '@/style/googleFont.css';
-import { UserAuth } from '@/app/context/user';
 import { MENU, THEME, MENU_TYPE,  ITEM_TYPE, CATEGORY_TYPE } from '@/appwrite/initial-values';
 import { getMenu, getCategoriesForMenuCard, getItemsForMenuCard, getTheme } from '@/appwrite/appwrite-functions';
 import MenuCardNavbar from '@/components/menu-card-navbar'
 import Spinner from '@/components/spinner';
 import ThreeColumnRow from '@/components/three-columns-row';
 import TwoColumnRow from '@/components/two-columns-row';
-import Navbar from '@/components/navbar';
-import VerifyEmailView from '@/components/verify-email-view';
-
 
 
 export default function MenuCard({params} : {params:any}) {
-    const { user, userLoading } = UserAuth();
     const [theme, setTheme] = useState(THEME);
     const [menu, setMenu] = useState(MENU);
     const [items, setItems] = useState(new Map());
@@ -187,140 +182,124 @@ export default function MenuCard({params} : {params:any}) {
     }, []);
 
     return (
+      
         <>
-            { userLoading ? 
-                    <Spinner/>
-                :
-                    <>
-                        { user?.emailVerification ? 
-                                <>
-                                   
-                                    { dataLoaded ? 
-                                        <>
-                                           
-                                        <div className={`relative ${theme.card_bg_color} h-screen`}>
+            { dataLoaded ? 
+                    
+                    <div className={`relative ${theme.card_bg_color} h-screen`}>
 
-                                            <MenuCardNavbar menu={menu} theme={theme}/>
+                        <MenuCardNavbar menu={menu} theme={theme}/>
 
-                                            <div className='h-[91%] overflow-y-auto no-scrollbar'>
-                                                
-                                                    { 
-                                                        currentCategory && currentCategory?.$id !== '' ?
-                                                            <div className='flex justify-between pt-3 pb-1 px-3'>
-                                                                <p className={`text-xs ${theme.item_font_family} ${theme.item_txt_color}`}>
-                                                                    {currentCategory.category_name}
-                                                                </p>
-                                                                <p className={`${currentCategory.no_of_price_cols > 1 ? 'visible' : 'invisible'} text-xs ${theme.price_font_family} ${theme.price_txt_color}`}>
-                                                                    {currentCategory.price_col_name1+" / "+ currentCategory.price_col_name2}
-                                                                </p>
-                                                            </div>
-                                                        :  <></>
-                                                    }
-
-                                                    {
-                                                        currentItems && currentItems.length > 0 ?
-                                                                <>
-                                                                    {currentItems.map((itm :any, index :number) => {
-                                                                        const isLast = index === (currentItems.length - 1) ? true : false;
-                                                                        return (
-                                                                            <div key={index}>
-                                                                                { 
-                                                                                    currentCategory?.no_of_price_cols === 2 ?
-                                                                                        <ThreeColumnRow item={itm} isLast={isLast} menu={menu} theme={theme} itemType={itemType}/>
-                                                                                    : 
-                                                                                        <TwoColumnRow item={itm} isLast={isLast} menu={menu} theme={theme} itemType={itemType}/>
-                                                                                }
-                                                                            </div>
-                                                                        )
-                                                                    })}
-                                                                </>
-                                                            :
-                                                                <p className={`text-center text-base pt-10 ${theme.item_txt_color} ${theme.item_font_family}`}>No items to show</p>
-                                                    }
-                                                    
-                                                    <div className='absolute bottom-4 right-4'>
-                                                        <button onClick={handleDrawer} type='button' className={`btn btn-circle btn-sm ${theme.drawer_bg_color} border-none`}>
-                                                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className={`w-5 h-5 ${theme.category_txt_color} `}>
-                                                                <path fillRule="evenodd" d="M2 4.75A.75.75 0 0 1 2.75 4h14.5a.75.75 0 0 1 0 1.5H2.75A.75.75 0 0 1 2 4.75ZM2 10a.75.75 0 0 1 .75-.75h14.5a.75.75 0 0 1 0 1.5H2.75A.75.75 0 0 1 2 10Zm0 5.25a.75.75 0 0 1 .75-.75h14.5a.75.75 0 0 1 0 1.5H2.75a.75.75 0 0 1-.75-.75Z" clipRule="evenodd" />
-                                                            </svg>
-                                                        </button>
-                                                    </div>
-                                                    
-                                                    <div className={`${toggleDrawer ? 'translate-y-0':'translate-y-full'} transition duration-150 w-full fixed block bottom-0 z-40 h-[50%] ${theme.drawer_bg_color} card rounded-none`} id="drawer-bottom" tabIndex={-1}>
-                                                        <div className='h-full relative'>
-
-                                                            { toggleDrawer === true ? 
-                                                                <div className='absolute inset-x-0 -top-8 text-right'>
-                                                                    <button onClick={handleDrawer} className="btn btn-xs btn-ghost">
-                                                                        <svg xmlns="http://www.w3.org/2000/svg" className={`h-5 w-5 ${theme.drawer_bg_color.replace("bg","text")}`} fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" /></svg>
-                                                                    </button>
-                                                                </div>
-                                                            : '' }
-
-                                                            <div className={` ${menu.show_item_type ? 'flex justify-center h-[10%] px-4' : 'hidden'}`}>
-                                                            
-                                                                <div className='flex gap-3 pt-3'>
-                                                                    { itemType === "none" ? 
-                                                                        <a className={`${theme.card_bg_color} ${theme.category_font_family} ${theme.item_txt_color} badge badge-sm cursor-pointer`}>ALL</a>
-                                                                    :    
-                                                                        <a onClick={() => handleItemType("none")} className={`${theme.drawer_bg_color} ${theme.category_font_family} ${theme.category_txt_color} badge badge-sm cursor-pointer`}>ALL</a>
-                                                                    }
-                                                                    { itemType === "veg" ? 
-                                                                        <a className={`${theme.category_font_family} bg-green-500 text-white border-green-500 badge badge-sm cursor-pointer`}>VEG</a>
-                                                                    :
-                                                                        <a onClick={() => handleItemType("veg")} className={`${theme.drawer_bg_color} ${theme.category_font_family} ${theme.category_txt_color} badge badge-sm cursor-pointer`}>VEG</a>
-                                                                    }
-                                                                    { itemType === "egg" ? 
-                                                                        <a className={`${theme.category_font_family} bg-orange-400 text-white border-orange-400 badge badge-sm cursor-pointer`}>EGG</a>
-                                                                    :
-                                                                        <a onClick={() => handleItemType("egg")} className={`${theme.drawer_bg_color} ${theme.category_font_family} ${theme.category_txt_color} badge badge-sm cursor-pointer`}>EGG</a>
-                                                                    }
-                                                                    { itemType === "nonveg" ? 
-                                                                        <a className={`${theme.category_font_family} bg-red-500 text-white border-red-500 badge badge-sm cursor-pointer`}>NON-VEG</a>
-                                                                    :
-                                                                        <a onClick={() => handleItemType("nonveg")} className={`${theme.drawer_bg_color} ${theme.category_font_family} ${theme.category_txt_color} badge badge-sm cursor-pointer`}>NON-VEG</a>
-                                                                    }
-                                                                </div>
-                                                                
-                                                            </div>
-
-                                                            <div className={` ${menu.show_item_type ? 'h-[90%]' : 'h-[100%] pt-4'} pb-10 overflow-y-auto no-scrollbar`}>
-                                                                { 
-                                                                    categories && categories.size > 0 ? 
-                                                                        <>
-                                                                            {[...categories.keys()].map((cat :any, index :number) => (
-                                                                                <div onClick={() => handleCategory(index)} className={`flex justify-between py-2 px-5 ${theme.category_font_family} ${theme.category_txt_color} ${theme.category_txt_transform} ${theme.category_txt_weight} ${theme.category_txt_size}`} key={index}>
-                                                                                    <span className={`${categoryIndex === index ? "after:content-['_✓']" : ""} cursor-pointer`}>{categories.get(index)?.category_name}</span>
-                                                                                    <span className='cursor-pointer'>{items.get(index)?.length}</span>
-                                                                                </div>
-                                                                            ))}
-                                                                        </>
-                                                                    : 
-                                                                        <p className={`text-center text-base pt-10 ${theme.category_txt_color} ${theme.category_font_family}`}>No categories</p>
-                                                                }
-                                                            </div>
-                                                            
-                                                        </div>
-                                                    </div>
-
-                                            </div>
-
+                        <div className='h-[91%] overflow-y-auto no-scrollbar'>
+                            
+                                { 
+                                    currentCategory && currentCategory?.$id !== '' ?
+                                        <div className='flex justify-between pt-3 pb-1 px-3'>
+                                            <p className={`text-xs ${theme.item_font_family} ${theme.item_txt_color}`}>
+                                                {currentCategory.category_name}
+                                            </p>
+                                            <p className={`${currentCategory.no_of_price_cols > 1 ? 'visible' : 'invisible'} text-xs ${theme.price_font_family} ${theme.price_txt_color}`}>
+                                                {currentCategory.price_col_name1+" / "+ currentCategory.price_col_name2}
+                                            </p>
                                         </div>
-                                           
-                                        </>
-                                        : 
-                                            <Spinner/>
-                                    }
-                                </>
-                            :
-                                <>
-                                    <Navbar user={user}/>
-                                    <VerifyEmailView title="Email not verified!" showIcon={false}/>
-                                </>
-                        }
-                    </>  
+                                    :  <></>
+                                }
+
+                                {
+                                    currentItems && currentItems.length > 0 ?
+                                            <>
+                                                {currentItems.map((itm :any, index :number) => {
+                                                    const isLast = index === (currentItems.length - 1) ? true : false;
+                                                    return (
+                                                        <div key={index}>
+                                                            { 
+                                                                currentCategory?.no_of_price_cols === 2 ?
+                                                                    <ThreeColumnRow item={itm} isLast={isLast} menu={menu} theme={theme} itemType={itemType}/>
+                                                                : 
+                                                                    <TwoColumnRow item={itm} isLast={isLast} menu={menu} theme={theme} itemType={itemType}/>
+                                                            }
+                                                        </div>
+                                                    )
+                                                })}
+                                            </>
+                                        :
+                                            <p className={`text-center text-base pt-10 ${theme.item_txt_color} ${theme.item_font_family}`}>No items to show</p>
+                                }
+                                
+                                <div className='absolute bottom-4 right-4'>
+                                    <button onClick={handleDrawer} type='button' className={`btn btn-circle btn-md ${theme.drawer_bg_color} border-none`}>
+                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className={`w-6 h-6 ${theme.category_txt_color} `}>
+                                            <path fillRule="evenodd" d="M2 4.75A.75.75 0 0 1 2.75 4h14.5a.75.75 0 0 1 0 1.5H2.75A.75.75 0 0 1 2 4.75ZM2 10a.75.75 0 0 1 .75-.75h14.5a.75.75 0 0 1 0 1.5H2.75A.75.75 0 0 1 2 10Zm0 5.25a.75.75 0 0 1 .75-.75h14.5a.75.75 0 0 1 0 1.5H2.75a.75.75 0 0 1-.75-.75Z" clipRule="evenodd" />
+                                        </svg>
+                                    </button>
+                                </div>
+                                
+                                <div className={`${toggleDrawer ? 'translate-y-0':'translate-y-full'} transition duration-150 w-full fixed block bottom-0 z-40 h-[50%] ${theme.drawer_bg_color} card rounded-none`} id="drawer-bottom" tabIndex={-1}>
+                                    <div className='h-full relative'>
+
+                                        { toggleDrawer === true ? 
+                                            <div className='absolute inset-x-0 -top-8 text-right'>
+                                                <button onClick={handleDrawer} className="btn btn-xs btn-ghost">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" className={`h-5 w-5 ${theme.drawer_bg_color.replace("bg","text")}`} fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" /></svg>
+                                                </button>
+                                            </div>
+                                        : '' }
+
+                                        <div className={` ${menu.show_item_type ? 'flex justify-center h-[10%] px-4' : 'hidden'}`}>
+                                        
+                                            <div className='flex gap-3 pt-3'>
+                                                { itemType === "none" ? 
+                                                    <a className={`${theme.card_bg_color} ${theme.category_font_family} ${theme.item_txt_color} badge badge-sm cursor-pointer`}>ALL</a>
+                                                :    
+                                                    <a onClick={() => handleItemType("none")} className={`${theme.drawer_bg_color} ${theme.category_font_family} ${theme.category_txt_color} badge badge-sm cursor-pointer`}>ALL</a>
+                                                }
+                                                { itemType === "veg" ? 
+                                                    <a className={`${theme.category_font_family} bg-green-500 text-white border-green-500 badge badge-sm cursor-pointer`}>VEG</a>
+                                                :
+                                                    <a onClick={() => handleItemType("veg")} className={`${theme.drawer_bg_color} ${theme.category_font_family} ${theme.category_txt_color} badge badge-sm cursor-pointer`}>VEG</a>
+                                                }
+                                                { itemType === "egg" ? 
+                                                    <a className={`${theme.category_font_family} bg-orange-400 text-white border-orange-400 badge badge-sm cursor-pointer`}>EGG</a>
+                                                :
+                                                    <a onClick={() => handleItemType("egg")} className={`${theme.drawer_bg_color} ${theme.category_font_family} ${theme.category_txt_color} badge badge-sm cursor-pointer`}>EGG</a>
+                                                }
+                                                { itemType === "nonveg" ? 
+                                                    <a className={`${theme.category_font_family} bg-red-500 text-white border-red-500 badge badge-sm cursor-pointer`}>NON-VEG</a>
+                                                :
+                                                    <a onClick={() => handleItemType("nonveg")} className={`${theme.drawer_bg_color} ${theme.category_font_family} ${theme.category_txt_color} badge badge-sm cursor-pointer`}>NON-VEG</a>
+                                                }
+                                            </div>
+                                            
+                                        </div>
+
+                                        <div className={` ${menu.show_item_type ? 'h-[90%]' : 'h-[100%] pt-4'} pb-10 overflow-y-auto no-scrollbar`}>
+                                            { 
+                                                categories && categories.size > 0 ? 
+                                                    <>
+                                                        {[...categories.keys()].map((cat :any, index :number) => (
+                                                            <div onClick={() => handleCategory(index)} className={`flex justify-between py-2 px-5 ${theme.category_font_family} ${theme.category_txt_color} ${theme.category_txt_transform} ${theme.category_txt_weight} ${theme.category_txt_size}`} key={index}>
+                                                                <span className={`${categoryIndex === index ? "after:content-['_✓']" : ""} cursor-pointer`}>{categories.get(index)?.category_name}</span>
+                                                                <span className='cursor-pointer'>{items.get(index)?.length}</span>
+                                                            </div>
+                                                        ))}
+                                                    </>
+                                                : 
+                                                    <p className={`text-center text-base pt-10 ${theme.category_txt_color} ${theme.category_font_family}`}>No categories</p>
+                                            }
+                                        </div>
+                                        
+                                    </div>
+                                </div>
+
+                        </div>
+
+                    </div>
+                    
+                : 
+                    <Spinner/>
             }
-        </> 
+        </>
+                           
     );
 }
 

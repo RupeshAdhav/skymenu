@@ -63,7 +63,7 @@ export default function EditMenu(props :any) {
             <dialog id="edit-menu-modal" className={`modal ${props.modal ? "modal-open" : "modal-close"}`}>
                 <div className="modal-box w-11/12 max-w-3xl rounded p-0">
                     <div className="border-b py-4">
-                        <h1 className="text-xl text-gray-900 text-center">Update Menu</h1>
+                        <h1 className="text-xl text-gray-900 text-center">Edit Menu</h1>
                     </div>
                     <div className="modal-action px-6">
                         <form method="dialog" onSubmit={handleSubmit} className="w-full pb-6 space-y-4" autoComplete="off" id="edit-menu-form">

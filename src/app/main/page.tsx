@@ -29,18 +29,16 @@ export default function Main() {
         
         <header className="absolute inset-x-0 top-0 z-50">
             <nav className="flex items-center justify-between p-6 lg:px-8" aria-label="Global">
-                <div className="flex lg:flex-1">
-                    <a href="#" className="-m-1.5 p-1.5">
-                    <span className="sr-only">Your Company</span>
-                    <img
-                        className="h-8 w-auto"
-                        src="https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=600"
-                        alt=""
-                    />
-                    </a>
+                <div className="flex">
+                    <span className="text-2xl leading-6 text-blue-500">
+                        sky
+                    </span>
+                    <span className="text-2xl font-light leading-6 text-gray-900">
+                        menu
+                    </span>
                 </div>
                 <div className="lg:flex lg:flex-1 lg:justify-end">
-                    <Link href="/log-in" className="text-sm font-semibold leading-6 text-gray-900">
+                    <Link href="/log-in" className="text-md font-semibold leading-6 text-gray-900">
                         Sign up / Log in <span aria-hidden="true">&rarr;</span>
                     </Link>
                 </div>

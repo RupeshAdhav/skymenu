@@ -53,7 +53,7 @@ export default function DeleteCategory(props :any) {
             <dialog id="delete-category-modal" className={`modal ${props.modal ? "modal-open" : "modal-close"}`}>
                 <div className="modal-box rounded p-0">
                     <div className="border-b py-4">
-                        <h1 className="text-xl text-gray-900 text-center">Delete Category &ldquo;{props.category.category_name}&rdquo;</h1>
+                        <h1 className="text-xl text-gray-900 text-center">Delete &ldquo;{props.category.category_name}&rdquo; Category</h1>
                     </div>
                     <div className="modal-action px-6">
                         <div className="w-full pb-6">

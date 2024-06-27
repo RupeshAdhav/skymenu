@@ -196,7 +196,7 @@ export default function Menu() {
                                                                                                 </li>
                                                                                                 <li><a onClick={() => handleDelete(index)}>Delete</a></li>
                                                                                                 <li><Link href={"/edit-theme/"+menu.$id}>Edit Theme</Link></li>
-                                                                                                <li><Link href={"/menu-card/"+menu.$id}>View</Link></li>
+                                                                                                <li><Link href={"/menu-card/"+menu.$id}>View Menu</Link></li>
                                                                                             </ul>
                                                                                         </div>
                                                                                     </td>

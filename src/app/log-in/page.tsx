@@ -1,6 +1,6 @@
 'use client';
 
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import Link from 'next/link';
 import { UserAuth } from '../context/user';
@@ -15,9 +15,6 @@ export default function LogIn() {
   const router = useRouter();
   const { login } = UserAuth();
 
-  //const searchParams = useSearchParams();
-  //const goTo = searchParams.get('goTo');
-
   const handleSubmit = async (event: any) => {
     event.preventDefault();
     try {
@@ -26,11 +23,7 @@ export default function LogIn() {
 
       login(email, password)
       .then(() => {
-          // if(goTo){
-          //   router.push(goTo);
-          // }else{
-            router.push("/menu");
-          //}
+          router.push("/menu");
       })
       .catch((err: any) => {
         if(err.type === 'user_session_already_exists'){

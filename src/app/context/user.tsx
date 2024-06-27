@@ -5,7 +5,6 @@ const UserContext = createContext<any>({});
 
 interface Props {
     children?: ReactNode
-    // any props that come into the component
 }
 
 export const AuthContextProvider = ({ children, ...props }: Props) => {

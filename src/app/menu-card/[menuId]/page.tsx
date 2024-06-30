@@ -165,7 +165,8 @@ export default function MenuCard({params} : {params:any}) {
                     border_color: response.documents[i].border_color,
                 
                     drawer_open_icon_color: response.documents[i].drawer_open_icon_color,
-                    drawer_close_icon_color: response.documents[i].drawer_close_icon_color
+                    drawer_close_icon_color: response.documents[i].drawer_close_icon_color,
+                    note_icon_color: response.documents[i].note_icon_color
                 });
             }
             setTheme(temp[0]);

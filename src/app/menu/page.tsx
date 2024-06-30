@@ -16,6 +16,8 @@ import OfflineCircle from '@/app/svg-icons/offline-circle'
 import { getMenus, getCountries } from '@/appwrite/appwrite-functions'
 import { MENU, COUNTRY } from '@/appwrite/initial-values';
 import { UserAuth } from '../context/user';
+import ProfileLogo from '@/components/profile-logo';
+import DeleteLogo from '../actions/delete-logo';
 
 
 export default function Menu() {
@@ -23,12 +25,14 @@ export default function Menu() {
     const [menus, setMenus] = useState([MENU]);
     const [updateMenu, setUpdateMenu] = useState(MENU);
     const [deleteMenu, setDeleteMenu] = useState(MENU);
+    const [deleteLogo, setDeleteLogo] = useState(MENU);
     const [openUpdateModal, setUpdateModal] = useState(false);
     const [openDeleteModal, setDeleteModal] = useState(false);
+    const [openLogoDeleteModal, setLogoDeleteModal] = useState(false);
     const [dataLoaded, setDataLoaded] = useState(false);
     const { user, userLoading } = UserAuth();
 
-    const initMenus = () => {
+    const initMenus = async () => {
         setDataLoaded(false);
         getMenus(user.$id)
         .then((response: any) => {
@@ -46,7 +50,10 @@ export default function Menu() {
                     address: response.documents[i].address,
                     is_delete: response.documents[i].is_delete,
                     is_active: response.documents[i].is_active,
-                    show_item_type: response.documents[i].show_item_type
+                    show_item_type: response.documents[i].show_item_type,
+                    logo_id: response.documents[i].logo_id,
+                    logo_name: response.documents[i].logo_name,
+                    note: response.documents[i].note
                 })
             }
             setMenus(temp);
@@ -85,8 +92,12 @@ export default function Menu() {
 
     const toggleDeleteModal = () => {
         setDeleteModal(!openDeleteModal);
-    }    
+    } 
 
+    const toggleLogoDeleteModal = () => {
+        setLogoDeleteModal(!openLogoDeleteModal);
+    } 
+    
     function handleEdit(index: number): void {
         setUpdateMenu(menus[index]);
         toggleUpdateModal();
@@ -96,6 +107,12 @@ export default function Menu() {
         setDeleteMenu(menus[index]);
         toggleDeleteModal();
     }
+
+    function handleLogoDelete(index: number): void {
+        setDeleteLogo(menus[index]);
+        toggleLogoDeleteModal();
+    }
+
 
     return (
         <>
@@ -120,6 +137,11 @@ export default function Menu() {
                                                             initMenus={initMenus} 
                                                             menu={deleteMenu} 
                                                             modal={openDeleteModal} toggleModal={toggleDeleteModal}/>
+
+                                                        <DeleteLogo 
+                                                            initMenus={initMenus} 
+                                                            menu={deleteLogo} 
+                                                            modal={openLogoDeleteModal} toggleModal={toggleLogoDeleteModal}/>
                                                         
                                                         <header className="bg-white mt-6">
                                                             <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8 flex justify-between items-center">
@@ -138,6 +160,7 @@ export default function Menu() {
                                                                                 <th className='md:table-cell hidden'>Item Type</th>
                                                                                 <th className='md:table-cell hidden'>Country</th>
                                                                                 <th className='md:table-cell hidden'>Phone</th>
+                                                                                <th className='md:table-cell hidden'>Note</th>
                                                                                 <th className='md:table-cell hidden'>Address</th>
                                                                                 <th></th>
                                                                             </tr>
@@ -147,17 +170,7 @@ export default function Menu() {
                                                                                 <tr key={menu.$id}>
                                                                                     <td>
                                                                                         <div className="flex items-center gap-3">
-                                                                                            {/* <div>
-                                                                                                <img 
-                                                                                                src={menu.profile_link} 
-                                                                                                alt={menu.menu_name} 
-                                                                                                className="inline-block h-12 w-12 rounded-full"/>
-                                                                                            </div> */}
-                                                                                            <div className="avatar">
-                                                                                                <div className="w-10 rounded-full">
-                                                                                                    <img src="https://daisyui.com/images/stock/photo-1534528741775-53994a69daeb.jpg" alt="Tailwind-CSS-Avatar-component" />
-                                                                                                </div>
-                                                                                            </div>
+                                                                                           <ProfileLogo menu={menu}/>
                                                                                             <div>
                                                                                                 <p className="font-bold text-blue-600 hover:text-blue-500 text-base">
                                                                                                     <Link href={`/categories/${menu.$id}/${menu.menu_name}`}>{menu.menu_name}</Link>
@@ -183,6 +196,9 @@ export default function Menu() {
                                                                                         {menu.phone}
                                                                                     </td>
                                                                                     <td className='md:table-cell hidden'>
+                                                                                        {menu.note}
+                                                                                    </td>
+                                                                                    <td className='md:table-cell hidden'>
                                                                                         {menu.address}
                                                                                     </td>
                                                                                     <td>
@@ -195,6 +211,10 @@ export default function Menu() {
                                                                                                     <a onClick={() => handleEdit(index)}>Edit</a>
                                                                                                 </li>
                                                                                                 <li><a onClick={() => handleDelete(index)}>Delete</a></li>
+                                                                                                {menu.logo_id ? 
+                                                                                                    <li><a onClick={() => handleLogoDelete(index)}>Removed Logo/Image</a></li>
+                                                                                                    : <></>
+                                                                                                }
                                                                                                 <li><Link href={"/edit-theme/"+menu.$id}>Edit Theme</Link></li>
                                                                                                 <li><Link href={"/menu-card/"+menu.$id}>View Menu</Link></li>
                                                                                             </ul>

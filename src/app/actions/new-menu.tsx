@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { createMenu, getUser, createTheme } from '@/appwrite/appwrite-functions'
+import { createMenu, getUser, createTheme, createLogo } from '@/appwrite/appwrite-functions'
 import { toast } from 'react-hot-toast';
 import { UserAuth } from '../context/user';
 import { useRouter } from 'next/navigation'
@@ -13,6 +13,7 @@ export default function NewMenu(props :any) {
     const [countryIndex, setCountryIndex] = useState(0);
     const [status, setStatus] = useState(true);
     const [showItemTypeOption, setShowItemTypeOption] = useState(true);
+    const [file, setFile] = useState<any>('');
     const router = useRouter();
 
     const handleStatus = (e :any) => {
@@ -32,6 +33,10 @@ export default function NewMenu(props :any) {
         setDisabledButton(false);
     }
 
+    const handleFileChange = async (event: any) => {
+        setFile(event.target.files[0]);
+    };
+
     const handleSubmit = async (event: any) => {
         event.preventDefault();
         try {
@@ -49,28 +54,29 @@ export default function NewMenu(props :any) {
                 profile_link: formData.get('profile_link'),
                 is_delete: false,
                 is_active: status,
-                show_item_type: showItemTypeOption
+                show_item_type: showItemTypeOption,
+                logo_id: "",
+                logo_name: "",
+                note: formData.get('profile_link')
             }
 
             getUser()
             .then(function(){
-
-                createMenu(formMenu, user.$id)
-                .then(function(response){
-                    
-                    setDisabledButton(false);
-                    setModal(false);
-                    setCountryIndex(0);
-                    createTheme({ menu_id: response.$id, title_font_family: 'Roboto', subtitle_font_family: 'Roboto', item_font_family: 'Roboto', price_font_family: 'Roboto', description_font_family: 'Roboto', category_font_family: 'Roboto', navbar_shadow_color: 'shadow-slate-100', title_txt_transform: 'normal-case', subtitle_txt_transform: 'normal-case', item_txt_transform: 'normal-case', description_txt_transform: 'normal-case', category_txt_transform: 'normal-case', navbar_bg_color: 'bg-white', card_bg_color: 'bg-white', dial_bg_color: 'bg-black', drawer_bg_color: 'bg-black', title_txt_color: 'text-black', subtitle_txt_color: 'text-black', item_txt_color: 'text-black', price_txt_color: 'text-black', currency_txt_color: 'text-black', description_txt_color: 'text-black', category_txt_color: 'text-white', title_txt_size: 'text-base', subtitle_txt_size: 'text-xs', item_txt_size: 'text-base', description_txt_size: 'text-xs', currency_txt_size: 'text-base', price_txt_size: 'text-base', category_txt_size: 'text-base', title_txt_weight: 'font-normal', subtitle_txt_weight: 'font-normal', item_txt_weight: 'font-normal', description_txt_weight: 'font-normal', currency_txt_weight: 'font-normal', price_txt_weight: 'font-normal', category_txt_weight: 'font-normal', border_size: 'border-b', border_color: 'border-black', drawer_open_icon_color: 'text-white', drawer_close_icon_color: 'text-white' }); // create new theme
-                    toast.success('New menu \"'+formMenu.menu_name+'\" created');
-                    props.initMenus();
-
-                })
-                .catch((err: any) => {
-                    setDisabledButton(false);
-                    toast.error(err?.response?.message)
-                }); 
-
+                if(file){
+                    createLogo(file)
+                    .then(function(response){
+                        console.log('## fileId: '+JSON.stringify(response));
+                        formMenu.logo_id = response.$id;
+                        formMenu.logo_name = response.name;
+                        handleCreateMenu(formMenu);
+                    })
+                    .catch((err: any) => {
+                        setDisabledButton(false);
+                        toast.error(err?.response?.message)
+                    }); 
+                }else{
+                    handleCreateMenu(formMenu);
+                }
             })
             .catch((err: any) => {
                 router.push('/log-in');
@@ -81,8 +87,69 @@ export default function NewMenu(props :any) {
             setDisabledButton(false);
             toast.error(JSON.stringify(err)); 
         }
-    }   
+    } 
+    
+    const handleCreateMenu = async (formMenu: any) => {
+        createMenu(formMenu, user.$id)
+        .then(function(response){
+            
+            setDisabledButton(false);
+            setModal(false);
+            setCountryIndex(0);
+            createTheme({ 
+                menu_id: response.$id, 
+                title_font_family: 'Roboto', 
+                subtitle_font_family: 'Roboto', 
+                item_font_family: 'Roboto', 
+                price_font_family: 'Roboto', 
+                description_font_family: 'Roboto', 
+                category_font_family: 'Roboto', 
+                navbar_shadow_color: 'shadow-slate-100', 
+                title_txt_transform: 'normal-case', 
+                subtitle_txt_transform: 'normal-case', 
+                item_txt_transform: 'normal-case', 
+                description_txt_transform: 'normal-case', 
+                category_txt_transform: 'normal-case', 
+                navbar_bg_color: 'bg-white', 
+                card_bg_color: 'bg-white', 
+                dial_bg_color: 'bg-black', 
+                drawer_bg_color: 'bg-black', 
+                title_txt_color: 'text-black', 
+                subtitle_txt_color: 'text-black', 
+                item_txt_color: 'text-black', 
+                price_txt_color: 'text-black', 
+                currency_txt_color: 'text-black', 
+                description_txt_color: 'text-black', 
+                category_txt_color: 'text-white', 
+                title_txt_size: 'text-base', 
+                subtitle_txt_size: 'text-xs', 
+                item_txt_size: 'text-base', 
+                description_txt_size: 'text-xs', 
+                currency_txt_size: 'text-base',
+                price_txt_size: 'text-base',
+                category_txt_size: 'text-base', 
+                title_txt_weight: 'font-normal', 
+                subtitle_txt_weight: 'font-normal', 
+                item_txt_weight: 'font-normal', 
+                description_txt_weight: 'font-normal', 
+                currency_txt_weight: 'font-normal', 
+                price_txt_weight: 'font-normal', 
+                category_txt_weight: 'font-normal', 
+                border_size: 'border-b', 
+                border_color: 'border-black', 
+                drawer_open_icon_color: 'text-white', 
+                drawer_close_icon_color: 'text-white', 
+                note_icon_color: 'text-black' 
+            }); // create new theme
+            toast.success('New menu \"'+formMenu.menu_name+'\" created');
+            props.initMenus();
 
+        })
+        .catch((err: any) => {
+            setDisabledButton(false);
+            toast.error(err?.response?.message)
+        }); 
+    }
    
     return (
         <>
@@ -132,7 +199,7 @@ export default function NewMenu(props :any) {
                             <div className='flex flex-col md:flex-row gap-4 w-full'>
                                 <div className='basis-1/2'>
                                     <div className="form-control">
-                                        <label className="label cursor-pointer justify-start">
+                                        <label className="label cursor-pointer justify-start p-0">
                                             <input 
                                                 onChange={handleStatus}
                                                 id="is_active"
@@ -145,8 +212,8 @@ export default function NewMenu(props :any) {
                                     </div>
                                 </div>
                                 <div className='basis-1/2'>
-                                    <div className="form-control tooltip" data-tip="Show or hide the 'Item Type' sort options on the menu card.">
-                                        <label className="label cursor-pointer justify-start">
+                                    <div className="form-control tooltip" data-tip="Show or hide the Item Type (All, Veg, Egg, Non-Veg) sort options on the menu card.">
+                                        <label className="label cursor-pointer justify-start p-0">
                                             <input 
                                                 onChange={handleItemTypeOptions}
                                                 id="show_item_type"
@@ -160,21 +227,16 @@ export default function NewMenu(props :any) {
                                 </div>
                             </div>
                             
-
-                            {/* <div>
-                                <label htmlFor='profile' className='block text-xs font-medium leading-6 text-gray-900'>
-                                    Profile Link
-                                </label>
-                                <div className='mt-0'>
-                                    <input
-                                    value={menu.profile_link}
-                                    onChange={handleInput}
-                                    id='profile_link'
-                                    name='profile_link'
-                                    type='url'
-                                    className='pl-2 block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6'/>
+                            <div className='flex flex-col md:flex-row gap-4 w-full'>
+                                <div className='basis-1/2'>
+                                    <label htmlFor='slogan' className='block text-xs font-medium leading-6 text-gray-900 '>
+                                        Logo/Picture
+                                    </label>
+                                    <input type="file" className="file-input file-input-bordered file-input-sm w-full max-w-xs" accept="image/*" onChange={handleFileChange}/>
                                 </div>
-                            </div> */}
+                                <div className='basis-1/2'>
+                                </div>
+                            </div>
 
                             <div className='flex flex-col md:flex-row gap-4 w-full'>
 
@@ -215,7 +277,19 @@ export default function NewMenu(props :any) {
                                     </div>
                                 </div>
                                 
-                            </div>                                
+                            </div>
+
+                             <div>
+                                <label htmlFor='address' className='block text-xs font-medium leading-6 text-gray-900'>
+                                   Note
+                                </label>
+                                <div className='mt-0'>
+                                    <textarea
+                                    id='note'
+                                    name='note'
+                                    className='pl-2 block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6'/>
+                                </div>
+                            </div>                                      
                             
                             <div>
                                 <label htmlFor='address' className='block text-xs font-medium leading-6 text-gray-900'>

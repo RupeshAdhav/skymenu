@@ -1,6 +1,6 @@
 
-import { ID, account, databases } from "./config";
-import { Permission, Query, Role } from "appwrite";
+import { ID, account, databases, storage } from "./config";
+import { ImageGravity, Permission, Query, Role } from "appwrite";
 
 // get user
 export const getUser = () => {
@@ -47,7 +47,22 @@ export const getCountries = () => {
     return databases.listDocuments(String(process.env.NEXT_PUBLIC_SKYMENU_DATABASE_ID), String(process.env.NEXT_PUBLIC_SKYMENU_COLLECTION_COUNTRIES_ID));
 }
 
+export const createLogo = (file :any) => {
+    const uniqueId = ID.unique();
+    return storage.createFile(String(process.env.NEXT_PUBLIC_SKYMENU_COLLECTION_LOGOS_ID), uniqueId, file);
+}
 
+export const updateLogo = (logoId :any, file :any) => {
+    return storage.updateFile(String(process.env.NEXT_PUBLIC_SKYMENU_COLLECTION_LOGOS_ID), logoId, file);
+}
+
+export const deleteLogo = (logoId :any) => {
+    return storage.deleteFile(String(process.env.NEXT_PUBLIC_SKYMENU_COLLECTION_LOGOS_ID), logoId);
+}
+
+export const getLogo = (logoId :any) => {
+    return storage.getFilePreview(String(process.env.NEXT_PUBLIC_SKYMENU_COLLECTION_LOGOS_ID), logoId);
+}
 
 // get menus
 export const getMenus = (userId: string) => {

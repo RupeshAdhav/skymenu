@@ -24,6 +24,7 @@ export default function MenuCard({params} : {params:any}) {
     const [categoryIndex, setCategoryIndex] = useState(0);
     const [toggleDrawer, setToggleDrawer] = useState(false);
     const [itemType, setItemType] = useState("none");
+    const [openLogoModal, setLogoModel] = useState(false);
 
     const handleDrawer = () => {
         setToggleDrawer(!toggleDrawer);
@@ -40,6 +41,10 @@ export default function MenuCard({params} : {params:any}) {
         setItemType(item_type);
         handleDrawer();
     }
+
+    const toggleLogoModal = () => {
+        setLogoModel(!openLogoModal);
+    } 
 
     const initCategories = () => {
         
@@ -188,13 +193,13 @@ export default function MenuCard({params} : {params:any}) {
                     
                     <div className={`relative ${theme.card_bg_color} h-screen`}>
 
-                        <MenuCardNavbar menu={menu} theme={theme}/>
+                        <MenuCardNavbar menu={menu} theme={theme} modal={openLogoModal} toggleModal={toggleLogoModal}/>
 
                         <div className='h-[91%] overflow-y-auto no-scrollbar'>
                             
                                 { 
                                     currentCategory && currentCategory?.$id !== '' ?
-                                        <div className='flex justify-between pt-3 pb-1 px-3'>
+                                        <div className='flex justify-between pt-3 pb-1 px-4'>
                                             <p className={`text-xs ${theme.item_font_family} ${theme.item_txt_color}`}>
                                                 {currentCategory.category_name}
                                             </p>
@@ -239,8 +244,11 @@ export default function MenuCard({params} : {params:any}) {
 
                                         { toggleDrawer === true ? 
                                             <div className='absolute inset-x-0 -top-8 text-right'>
+                                                {/* <button onClick={handleDrawer} className="btn btn-xs btn-ghost">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className={`h-5 w-5 ${theme.drawer_bg_color.replace("bg","text")}`}><path strokeLinecap="round" strokeLinejoin="round" d="m11.25 11.25.041-.02a.75.75 0 0 1 1.063.852l-.708 2.836a.75.75 0 0 0 1.063.853l.041-.021M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9-3.75h.008v.008H12V8.25Z" /></svg>
+                                                </button> */}
                                                 <button onClick={handleDrawer} className="btn btn-xs btn-ghost">
-                                                    <svg xmlns="http://www.w3.org/2000/svg" className={`h-5 w-5 ${theme.drawer_bg_color.replace("bg","text")}`} fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" /></svg>
+                                                    <svg xmlns="http://www.w3.org/2000/svg" className={`h-5 w-5 ${theme.drawer_bg_color.replace("bg","text")}`} fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M6 18L18 6M6 6l12 12" /></svg>
                                                 </button>
                                             </div>
                                         : '' }

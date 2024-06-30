@@ -34,7 +34,10 @@ export type MENU_TYPE = {
     profile_link: string,
     is_delete: boolean,
     is_active: boolean,
-    show_item_type: boolean
+    show_item_type: boolean,
+    logo_id: string,
+    logo_name: string,
+    note: string
 }
 
 export const MENU = {
@@ -48,7 +51,10 @@ export const MENU = {
     profile_link: "",
     is_delete: false,
     is_active: true,
-    show_item_type: false
+    show_item_type: false,
+    logo_id: "",
+    logo_name: "",
+    note: ""
 }
 
 export type CATEGORY_TYPE = {
@@ -157,7 +163,8 @@ export type THEME_TYPE = {
     border_color: string,
 
     drawer_open_icon_color: string,
-    drawer_close_icon_color: string
+    drawer_close_icon_color: string,
+    note_icon_color: string
 };
 
 export const THEME = {
@@ -212,6 +219,7 @@ export const THEME = {
     border_color: 'border-orange-300',
 
     drawer_open_icon_color: 'text-white',
-    drawer_close_icon_color: 'text-white'
+    drawer_close_icon_color: 'text-white',
+    note_icon_color: 'bg-orange-300'
 };
 

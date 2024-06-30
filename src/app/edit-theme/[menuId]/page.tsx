@@ -32,6 +32,7 @@ export default function EditTheme({params} : {params:any}) {
     const [toggleDrawer, setToggleDrawer] = useState(false);
     const [themeStyle, setThemeStyle] = useState(1);
     const [itemType, setItemType] = useState("none");
+    const [openLogoModal, setLogoModel] = useState(false);
     const router = useRouter();
 
     const handleDrawer = () => {
@@ -49,6 +50,10 @@ export default function EditTheme({params} : {params:any}) {
         setItemType(item_type);
         handleDrawer();
     }
+
+    const toggleLogoModal = () => {
+        setLogoModel(!openLogoModal);
+    } 
 
     const initCategories = () => {
         
@@ -169,7 +174,8 @@ export default function EditTheme({params} : {params:any}) {
                     border_color: response.documents[i].border_color,
                 
                     drawer_open_icon_color: response.documents[i].drawer_open_icon_color,
-                    drawer_close_icon_color: response.documents[i].drawer_close_icon_color
+                    drawer_close_icon_color: response.documents[i].drawer_close_icon_color,
+                    note_icon_color: response.documents[i].note_icon_color
                 });
             }
             setTheme(temp[0]);
@@ -252,9 +258,9 @@ export default function EditTheme({params} : {params:any}) {
                                                         <a onClick={() => setThemeStyle(3)} className={`${themeStyle === 3 ? 'text-2xl font-bold text-blue-500' : 'text-lg font-light'} cursor-pointer`}>
                                                             Text Color
                                                         </a>
-                                                        {/* <a onClick={() => setThemeStyle(4)} className={`${themeStyle === 4 ? 'text-2xl font-bold text-blue-500' : 'text-lg font-light'} cursor-pointer`}>
-                                                            Icon Color
-                                                        </a> */}
+                                                        <a onClick={() => setThemeStyle(4)} className={`${themeStyle === 4 ? 'text-2xl font-bold text-blue-500' : 'text-lg font-light'} cursor-pointer`}>
+                                                            Note/Info Icon Color
+                                                        </a>
                                                         <a onClick={() => setThemeStyle(5)} className={`${themeStyle === 5 ? 'text-2xl font-bold text-blue-500' : 'text-lg font-light'} cursor-pointer`}>
                                                             Border Size & Color
                                                         </a>
@@ -275,7 +281,7 @@ export default function EditTheme({params} : {params:any}) {
                                                 <div className="w-1/3 shadow-lg shadow-slate-400 h-full">
                                                     <div className={`relative ${theme.card_bg_color} h-full`}>
 
-                                                        <MenuCardNavbar menu={menu} theme={theme}/>
+                                                        <MenuCardNavbar menu={menu} theme={theme} modal={openLogoModal} toggleModal={toggleLogoModal}/>
 
                                                         <div className='h-[91%] overflow-y-auto no-scrollbar'>
                                                             
@@ -327,7 +333,7 @@ export default function EditTheme({params} : {params:any}) {
                                                                         { toggleDrawer === true ? 
                                                                             <div className='absolute inset-x-0 -top-8 text-right'>
                                                                                 <button onClick={handleDrawer} className="btn btn-xs btn-ghost">
-                                                                                    <svg xmlns="http://www.w3.org/2000/svg" className={`h-5 w-5 ${theme.drawer_bg_color.replace("bg","text")}`} fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" /></svg>
+                                                                                    <svg xmlns="http://www.w3.org/2000/svg" className={`h-5 w-5 ${theme.drawer_bg_color.replace("bg","text")}`} fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M6 18L18 6M6 6l12 12" /></svg>
                                                                                 </button>
                                                                             </div>
                                                                         : '' }
@@ -875,19 +881,19 @@ export default function EditTheme({params} : {params:any}) {
                                                         : <></>
                                                     }
 
-                                                    {/** 
+                                                    {
                                                         themeStyle === 4 ? 
                                                             <div className='flex flex-col gap-5 px-20 pt-10'>
                                                                 <div>
-                                                                    <label htmlFor="drawer_open_icon_color" className="block text-xs font-medium leading-6 text-gray-900">
-                                                                        Category Button Icon Color
+                                                                    <label htmlFor="note_icon_color" className="block text-xs font-medium leading-6 text-gray-900">
+                                                                        Note Icon Color
                                                                     </label>
                                                                     <span className='flex'>
                                                                         <select 
-                                                                            value={theme.drawer_open_icon_color} 
+                                                                            value={theme.note_icon_color} 
                                                                             onChange={handleTheme} 
-                                                                            id="drawer_open_icon_color"
-                                                                            name="drawer_open_icon_color" 
+                                                                            id="note_icon_color"
+                                                                            name="note_icon_color" 
                                                                             required
                                                                             className="pl-2 w-full block rounded-md border-0 py-2 text-gray-900 sm:text-sm ring-1 ring-gray-300">
                                                                             {TEXT_COLORS.map((txtColor, index) => {
@@ -899,35 +905,11 @@ export default function EditTheme({params} : {params:any}) {
                                                                                 },
                                                                             )}
                                                                         </select> 
-                                                                        <div className={`w-7 my-1 ml-2 border-[1px] border-gray-300 ${theme.drawer_open_icon_color.replace('text', 'bg')}`}></div> 
-                                                                    </span>
-                                                                </div>
-                                                                <div>
-                                                                    <label htmlFor="drawer_close_icon_color" className="block text-xs font-medium leading-6 text-gray-900">
-                                                                        Category Drawer Close Icon Color   
-                                                                    </label>
-                                                                    <span className='flex'>
-                                                                        <select 
-                                                                            value={theme.drawer_close_icon_color} 
-                                                                            onChange={handleTheme} 
-                                                                            id="drawer_close_icon_color"
-                                                                            name="drawer_close_icon_color" 
-                                                                            required
-                                                                            className="pl-2 w-full block rounded-md border-0 py-2 text-gray-900 sm:text-sm ring-1 ring-gray-300">
-                                                                            {TEXT_COLORS.map((txtColor, index) => {
-                                                                                    return (
-                                                                                        <option value={txtColor} key={txtColor} className={`${txtColor}`}>
-                                                                                            {txtColor}
-                                                                                        </option>
-                                                                                    );
-                                                                                },
-                                                                            )}
-                                                                        </select> 
-                                                                        <div className={`w-7 my-1 ml-2 border-[1px] border-gray-300 ${theme.drawer_close_icon_color.replace('text', 'bg')}`}></div> 
+                                                                        <div className={`w-7 my-1 ml-2 border-[1px] border-gray-300 ${theme.note_icon_color.replace('text', 'bg')}`}></div> 
                                                                     </span>
                                                                 </div>
                                                             </div>
-                                                        : <></> */
+                                                        : <></>
                                                     }
 
                                                     {

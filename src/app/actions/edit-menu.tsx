@@ -1,12 +1,14 @@
 'use client'
 
 import { useState } from "react"
-import { updateMenu, getUser } from '@/appwrite/appwrite-functions'
+import { updateMenu, getUser, createLogo, deleteLogo } from '@/appwrite/appwrite-functions'
 import { toast } from 'react-hot-toast';
 import { useRouter } from 'next/navigation'
 
 export default function EditMenu(props :any) {
     const [disabledButton, setDisabledButton] = useState(false);
+    const [isLogoUpdate, setIsUpdateLogo] = useState(false);
+    const [file, setFile] = useState<any>('');
     const router = useRouter();
 
     const handleInput = (e :any) => {
@@ -21,6 +23,10 @@ export default function EditMenu(props :any) {
         props.toggleModal();
         setDisabledButton(false);
     }
+    
+    const handleFileChange = async (event: any) => {
+        setFile(event.target.files[0]);
+    };
 
     const handleSubmit = async (event: { preventDefault: () => void; }) => {
         event.preventDefault();
@@ -31,19 +37,25 @@ export default function EditMenu(props :any) {
             getUser()
             .then(function(){
 
-                updateMenu(temp)
-                .then(function () {
-
-                    setDisabledButton(false);
-                    props.toggleModal();
-                    toast.success('Menu \"'+props.menu.menu_name+'\" updated');
-                    props.initMenus();
-
-                })
-                .catch((err: any) => {
-                    setDisabledButton(false);
-                    toast.error(err?.response?.message)
-                }); 
+                if(file && isLogoUpdate){
+                    console.log('yes file');
+                    createLogo(file)
+                    .then(function(response){
+                        if(props.menu.logo_id){
+                            deleteLogo(props.menu.logo_id);
+                        }
+                        temp.logo_id = response.$id;
+                        temp.logo_name= response.name;
+                        handleUpdateMenu(temp);
+                    })
+                    .catch((err: any) => {
+                        setDisabledButton(false);
+                        toast.error(err?.response?.message)
+                    }); 
+                }else{
+                    console.log('no file');
+                    handleUpdateMenu(temp);
+                }
 
             })
             .catch((err: any) => {
@@ -56,6 +68,22 @@ export default function EditMenu(props :any) {
             setDisabledButton(false);
             toast.error(JSON.stringify(err))
         }
+    }
+
+    const handleUpdateMenu = async (temp: any) => {
+        updateMenu(temp)
+        .then(function (response) {
+
+            setDisabledButton(false);
+            props.toggleModal();
+            toast.success('Menu \"'+props.menu.menu_name+'\" updated');
+            props.initMenus();
+
+        })
+        .catch((err: any) => {
+            setDisabledButton(false);
+            toast.error(err?.response?.message)
+        }); 
     }
 
     return (
@@ -119,7 +147,7 @@ export default function EditMenu(props :any) {
                                     </div>
                                 </div>
                                 <div className='basis-1/2'>
-                                    <div className="form-control tooltip" data-tip="Show or hide the 'Item Type' sort options on the menu card.">
+                                    <div className="form-control tooltip" data-tip="Show or hide the Item Type (All, Veg, Egg, Non-Veg) sort options on the menu card.">
                                         <label className="label cursor-pointer justify-start">
                                             <input 
                                                 onChange={handleInput}
@@ -133,22 +161,39 @@ export default function EditMenu(props :any) {
                                     </div>
                                 </div>
                             </div>
-                            
-                            {/* <div>
-                                <label htmlFor="profile" className="block text-xs font-medium leading-6 text-gray-900">
-                                    Profile Link
-                                </label>
-                                <div className="mt-0">
-                                    <input
-                                    value={props.menu.profile_link || ''}
-                                    onChange={handleInput}
-                                    id="profile_link"
-                                    name="profile_link"
-                                    type="url"
-                                    className="pl-2 block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"/>
-                                </div>
-                            </div> */}
 
+                         
+                            <div className='flex flex-col md:flex-row gap-4 w-full'>
+                                <div className='basis-1/2'>
+                                    {isLogoUpdate? 
+                                        <>
+                                            <label htmlFor='slogan' className='block text-xs font-medium leading-6 text-gray-900 '>
+                                               Logo/Picture
+                                            </label>
+                                            <div className="mt-0 flex gap-2">
+                                                <input type="file" className="file-input file-input-bordered file-input-sm w-full max-w-xs" accept="image/*" onChange={handleFileChange}/>
+                                                <button className="btn btn-sm" onClick={() => setIsUpdateLogo(false)} type="button">Cancel</button>
+                                            </div>
+                                        </>
+                                    :
+                                        <>
+                                            <label htmlFor="country_id" className="block text-xs font-medium leading-6 text-gray-900">
+                                                Logo/Picture
+                                            </label>
+                                            <div className="mt-0 flex gap-2">
+                                                {props.menu?.logo_name ? 
+                                                <p className="btn btn-ghost btn-sm hover:bg-white">{props.menu?.logo_name}</p>
+                                                : '' }
+                                                <button className="btn btn-sm" onClick={() => setIsUpdateLogo(true)} type="button">Update</button>
+                                            </div>
+                                        </>
+                                    }
+                                </div>
+                                <div className='basis-1/2'>
+                                </div>
+                            </div>
+                               
+                            
                             <div className="flex flex-col md:flex-row gap-4 w-full">
 
                                 <div className="basis-1/2">
@@ -192,6 +237,20 @@ export default function EditMenu(props :any) {
                                 
                             </div>                                
                             
+                            <div>
+                                <label htmlFor="address" className="block text-xs font-medium leading-6 text-gray-900">
+                                    Note
+                                </label>
+                                <div className="mt-0">
+                                    <textarea
+                                    value={props.menu.note || ''} 
+                                    onChange={handleInput} 
+                                    id="note"
+                                    name="note"
+                                    className="pl-2 block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"/>
+                                </div>
+                            </div>      
+
                             <div>
                                 <label htmlFor="address" className="block text-xs font-medium leading-6 text-gray-900">
                                     Detail Address
